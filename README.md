@@ -1,0 +1,4 @@
+CordovaBarcode
+==============
+
+CordovaBarcode
