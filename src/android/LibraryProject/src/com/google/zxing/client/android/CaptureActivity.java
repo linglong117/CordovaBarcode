@@ -237,7 +237,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
 						@Override
 						public void onClick(View v) {
-							photo();
+							//photo();
 						}
 					});
 
