@@ -142,6 +142,8 @@
     
     callback = command.callbackId;
     
+    NSLog(@"command  >>  %@ ",command);
+    
     // We allow the user to define an alternate xib file for loading the overlay.
     NSString *overlayXib = nil;
     if ( [command.arguments count] >= 1 )
@@ -162,8 +164,8 @@
                  alterateOverlayXib:overlayXib
                  ];
     [processor retain];
-    [processor retain];
-    [processor retain];
+    //[processor retain];
+    //    [processor retain];
     // queue [processor scanBarcode] to run on the event loop
     [processor performSelector:@selector(scanBarcode) withObject:nil afterDelay:0];
 }
@@ -275,7 +277,7 @@ parentViewController:(UIViewController*)parentViewController
     self.viewController.orientationDelegate = self.plugin.viewController;
     
     // delayed [self openDialog];
-    [self performSelector:@selector(openDialog) withObject:nil afterDelay:1];
+    [self performSelector:@selector(openDialog) withObject:nil afterDelay:0];
 }
 
 //by  xyl  modify
@@ -290,15 +292,15 @@ parentViewController:(UIViewController*)parentViewController
 //--------------------------------------------------------------------------
 - (void)barcodeScanDone {
     
-//    AVAudioPlayer *player;
-//
-//    NSBundle *mainBundle = [NSBundle mainBundle];
-//    NSURL *soundUrl = [NSURL fileURLWithPath:[mainBundle pathForResource:@"beep-beep" ofType:@"aiff"] isDirectory:NO];
-//    player=[[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl error:nil];
-//    [player prepareToPlay];
-//    //[player play];
-//    [soundUrl release];
-//    //AudioServicesPlaySystemSound(SystemSoundID);
+    //    AVAudioPlayer *player;
+    //
+    //    NSBundle *mainBundle = [NSBundle mainBundle];
+    //    NSURL *soundUrl = [NSURL fileURLWithPath:[mainBundle pathForResource:@"beep-beep" ofType:@"aiff"] isDirectory:NO];
+    //    player=[[AVAudioPlayer alloc] initWithContentsOfURL:soundUrl error:nil];
+    //    [player prepareToPlay];
+    //    //[player play];
+    //    [soundUrl release];
+    //    //AudioServicesPlaySystemSound(SystemSoundID);
     
     
     self.capturing = NO;
@@ -706,6 +708,11 @@ parentViewController:(UIViewController*)parentViewController
     self.view = [[[UIView alloc] initWithFrame: self.processor.parentViewController.view.frame] autorelease];
     
     // setup capture preview layer
+    
+    //AVCaptureConnection's -setVideoOrientation:
+    //AVCaptureConnection
+    
+    
     AVCaptureVideoPreviewLayer* previewLayer = self.processor.previewLayer;
     previewLayer.frame = self.view.bounds;
     previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
@@ -978,7 +985,7 @@ sizeWithFont:font constrainedToSize:maxSize lineBreakMode:mode] : CGSizeZero;
     CGFloat linex = minAxis*RETICLE_OFFSET/RETICLE_SIZE;
     
     CGFloat reticleWidth = minAxis*(RETICLE_SIZE-2*RETICLE_OFFSET)/RETICLE_SIZE;
-
+    
     //    double rowNum = 20/(double)3;
     //    NSString *str = [self roundUp:linex afterPoint:2];
     
@@ -987,17 +994,17 @@ sizeWithFont:font constrainedToSize:maxSize lineBreakMode:mode] : CGSizeZero;
     UIImageView * imageqr1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"scanqr1"]];
     imageqr1.frame = CGRectMake(linex, linex, kQRWidth, kORHeight);
     [reticleView addSubview:imageqr1];
-
+    
     UIImageView * imageqr3 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"scanqr3"]];
     imageqr3.frame = CGRectMake(linex, reticleWidth+linex-kQRWidth, kQRWidth, kORHeight);
     //imageqr3.backgroundColor = [UIColor orangeColor];
     [reticleView addSubview:imageqr3];
     
-
+    
     UIImageView * imageqr2 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"scanqr2"]];
     imageqr2.frame = CGRectMake(reticleWidth+linex-kQRWidth, linex, kQRWidth, kORHeight);
     [reticleView addSubview:imageqr2];
-
+    
     UIImageView * imageqr4 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"scanqr4"]];
     imageqr4.frame = CGRectMake(reticleWidth+linex-kQRWidth, reticleWidth+linex-kQRWidth, kQRWidth, kORHeight);
     [reticleView addSubview:imageqr4];
@@ -1107,83 +1114,83 @@ sizeWithFont:font constrainedToSize:maxSize lineBreakMode:mode] : CGSizeZero;
         
         
         /*
-        //绘画四角的直角效果
-        //左上角 横线
-        UIColor* linecolor = [UIColor colorWithRed:0.0 green:1.0 blue:0.0 alpha:0.8];
-        CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
-        CGContextSetLineWidth(context, kLine_Width);
-        CGContextBeginPath(context);
-        //CGFloat lineOffset1 = RETICLE_OFFSET+(kLine_Width-RETICLE_WIDTH)/2;
-        CGFloat lineOffset1 = RETICLE_OFFSET+(kLine_Width-RETICLE_WIDTH)/2;
-        CGContextMoveToPoint(context, RETICLE_OFFSET, lineOffset1);
-        CGContextAddLineToPoint(context, kLine_Length, lineOffset1);
-        CGContextStrokePath(context);
-        //左上角 竖线
-        CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
-        CGContextSetLineWidth(context, kLine_Width);
-        CGContextBeginPath(context);
-        //CGContextMoveToPoint(context, lineOffset1, RETICLE_OFFSET+kLine_Width-RETICLE_WIDTH);
-        CGContextMoveToPoint(context, lineOffset1, RETICLE_OFFSET);
-        CGContextAddLineToPoint(context, lineOffset1, kLine_Length);
-        CGContextStrokePath(context);
-        
-        
-        CGFloat lineOffset2 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET)-(kLine_Width-RETICLE_WIDTH)/2;
-        CGFloat lineOffset3 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET)+(kLine_Width-RETICLE_WIDTH)/2;
-        
-        //左下角 横线
-        CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
-        CGContextSetLineWidth(context, kLine_Width);
-        CGContextBeginPath(context);
-        CGContextMoveToPoint(context, RETICLE_OFFSET, lineOffset2);
-        CGContextAddLineToPoint(context, kLine_Length, lineOffset2);
-        CGContextStrokePath(context);
-        //左下角 竖线
-        CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
-        CGContextSetLineWidth(context, kLine_Width);
-        CGContextBeginPath(context);
-        CGContextMoveToPoint(context, lineOffset1, lineOffset3-kLine_Width/2);
-        CGContextAddLineToPoint(context, lineOffset1, lineOffset3-20);
-        CGContextStrokePath(context);
-        
-        
-        //CGFloat lineOffset4 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET)-(kLine_Width-RETICLE_WIDTH)/2+5;
-        CGFloat lineOffset4 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET);
-        
-        
-        //右上角 横线
-        CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
-        CGContextSetLineWidth(context, kLine_Width);
-        CGContextBeginPath(context);
-        //CGFloat lineOffset3 = RETICLE_OFFSET+(kLine_Width-RETICLE_WIDTH)/2;
-        CGContextMoveToPoint(context, lineOffset4, lineOffset1);
-        CGContextAddLineToPoint(context, lineOffset2-20, lineOffset1);
-        CGContextStrokePath(context);
-        //右上角 竖线
-        CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
-        CGContextSetLineWidth(context, kLine_Width);
-        CGContextBeginPath(context);
-        CGContextMoveToPoint(context, lineOffset2, RETICLE_OFFSET);
-        CGContextAddLineToPoint(context, lineOffset2, kLine_Length);
-        CGContextStrokePath(context);
-        
-        
-        CGFloat lineOffset5 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET)+(kLine_Width-RETICLE_WIDTH)/2;
-        //右下角 横线
-        CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
-        CGContextSetLineWidth(context, kLine_Width);
-        CGContextBeginPath(context);
-        CGContextMoveToPoint(context, lineOffset4, lineOffset2);
-        CGContextAddLineToPoint(context, lineOffset3-20, lineOffset2);
-        CGContextStrokePath(context);
-        //右下角 竖线
-        CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
-        CGContextSetLineWidth(context, kLine_Width);
-        CGContextBeginPath(context);
-        CGContextMoveToPoint(context, lineOffset2, lineOffset3-kLine_Width/2);
-        CGContextAddLineToPoint(context, lineOffset2, lineOffset2-20);
-        CGContextStrokePath(context);
-        */
+         //绘画四角的直角效果
+         //左上角 横线
+         UIColor* linecolor = [UIColor colorWithRed:0.0 green:1.0 blue:0.0 alpha:0.8];
+         CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
+         CGContextSetLineWidth(context, kLine_Width);
+         CGContextBeginPath(context);
+         //CGFloat lineOffset1 = RETICLE_OFFSET+(kLine_Width-RETICLE_WIDTH)/2;
+         CGFloat lineOffset1 = RETICLE_OFFSET+(kLine_Width-RETICLE_WIDTH)/2;
+         CGContextMoveToPoint(context, RETICLE_OFFSET, lineOffset1);
+         CGContextAddLineToPoint(context, kLine_Length, lineOffset1);
+         CGContextStrokePath(context);
+         //左上角 竖线
+         CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
+         CGContextSetLineWidth(context, kLine_Width);
+         CGContextBeginPath(context);
+         //CGContextMoveToPoint(context, lineOffset1, RETICLE_OFFSET+kLine_Width-RETICLE_WIDTH);
+         CGContextMoveToPoint(context, lineOffset1, RETICLE_OFFSET);
+         CGContextAddLineToPoint(context, lineOffset1, kLine_Length);
+         CGContextStrokePath(context);
+         
+         
+         CGFloat lineOffset2 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET)-(kLine_Width-RETICLE_WIDTH)/2;
+         CGFloat lineOffset3 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET)+(kLine_Width-RETICLE_WIDTH)/2;
+         
+         //左下角 横线
+         CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
+         CGContextSetLineWidth(context, kLine_Width);
+         CGContextBeginPath(context);
+         CGContextMoveToPoint(context, RETICLE_OFFSET, lineOffset2);
+         CGContextAddLineToPoint(context, kLine_Length, lineOffset2);
+         CGContextStrokePath(context);
+         //左下角 竖线
+         CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
+         CGContextSetLineWidth(context, kLine_Width);
+         CGContextBeginPath(context);
+         CGContextMoveToPoint(context, lineOffset1, lineOffset3-kLine_Width/2);
+         CGContextAddLineToPoint(context, lineOffset1, lineOffset3-20);
+         CGContextStrokePath(context);
+         
+         
+         //CGFloat lineOffset4 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET)-(kLine_Width-RETICLE_WIDTH)/2+5;
+         CGFloat lineOffset4 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET);
+         
+         
+         //右上角 横线
+         CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
+         CGContextSetLineWidth(context, kLine_Width);
+         CGContextBeginPath(context);
+         //CGFloat lineOffset3 = RETICLE_OFFSET+(kLine_Width-RETICLE_WIDTH)/2;
+         CGContextMoveToPoint(context, lineOffset4, lineOffset1);
+         CGContextAddLineToPoint(context, lineOffset2-20, lineOffset1);
+         CGContextStrokePath(context);
+         //右上角 竖线
+         CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
+         CGContextSetLineWidth(context, kLine_Width);
+         CGContextBeginPath(context);
+         CGContextMoveToPoint(context, lineOffset2, RETICLE_OFFSET);
+         CGContextAddLineToPoint(context, lineOffset2, kLine_Length);
+         CGContextStrokePath(context);
+         
+         
+         CGFloat lineOffset5 = RETICLE_OFFSET+(RETICLE_SIZE-2*RETICLE_OFFSET)+(kLine_Width-RETICLE_WIDTH)/2;
+         //右下角 横线
+         CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
+         CGContextSetLineWidth(context, kLine_Width);
+         CGContextBeginPath(context);
+         CGContextMoveToPoint(context, lineOffset4, lineOffset2);
+         CGContextAddLineToPoint(context, lineOffset3-20, lineOffset2);
+         CGContextStrokePath(context);
+         //右下角 竖线
+         CGContextSetStrokeColorWithColor(context, linecolor.CGColor);
+         CGContextSetLineWidth(context, kLine_Width);
+         CGContextBeginPath(context);
+         CGContextMoveToPoint(context, lineOffset2, lineOffset3-kLine_Width/2);
+         CGContextAddLineToPoint(context, lineOffset2, lineOffset2-20);
+         CGContextStrokePath(context);
+         */
         CGRect rect = CGRectMake(
                                  RETICLE_OFFSET,
                                  RETICLE_OFFSET,
