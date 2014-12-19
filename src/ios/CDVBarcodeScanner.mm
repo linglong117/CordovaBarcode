@@ -134,40 +134,149 @@
     return result;
 }
 
+
+- (void)requestCameraPermissionWithSuccess:(void (^)(BOOL success))successBlock {
+    if (![self cameraIsPresent]) {
+        successBlock(NO);
+        return;
+    }
+    
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusAuthorized:
+            successBlock(YES);
+            break;
+            
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            successBlock(NO);
+            break;
+            
+        case AVAuthorizationStatusNotDetermined:
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo
+                                     completionHandler:^(BOOL granted) {
+                                         
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                             successBlock(granted);
+                                         });
+                                         
+                                     }];
+            break;
+    }
+}
+
+- (BOOL)scanningIsProhibited {
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            return YES;
+            break;
+            
+        default:
+            return NO;
+            break;
+    }
+}
+
+- (BOOL)cameraIsPresent {
+    return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+}
+- (void)displayPermissionMissingAlert {
+    NSString *message = nil;
+    if ([self scanningIsProhibited]) {
+        message = @"请在“设置－隐私－相机”选项中，允许程序访问您的相机";
+    } else if (![self cameraIsPresent]) {
+        message = @"没有相机";
+    } else {
+        message = @"发生一个未知错误";
+    }
+    
+    [[[UIAlertView alloc] initWithTitle:@""
+                                message:message
+                               delegate:nil
+                      cancelButtonTitle:@"确认"
+                      otherButtonTitles:nil] show];
+}
+
 //--------------------------------------------------------------------------
 - (void)scan:(CDVInvokedUrlCommand*)command {
-    CDVbcsProcessor* processor;
+    
+    
     NSString*       callback;
-    NSString*       capabilityError;
+    //NSString*       capabilityError;
     
     callback = command.callbackId;
     
     NSLog(@"command  >>  %@ ",command);
     
-    // We allow the user to define an alternate xib file for loading the overlay.
-    NSString *overlayXib = nil;
-    if ( [command.arguments count] >= 1 )
-    {
-        overlayXib = [command.arguments objectAtIndex:0];
-    }
     
-    capabilityError = [self isScanNotPossible];
-    if (capabilityError) {
-        [self returnError:capabilityError callback:callback];
-        return;
-    }
+    [self requestCameraPermissionWithSuccess:^(BOOL success) {
+        if (success) {
+           
+//            RootViewController * rt = [[RootViewController alloc]initWithPlugin:self callback:callback];
+//            [self.viewController presentViewController:rt animated:YES completion:^{
+            
+//            }];
+            
+             NSString*       capabilityError;
+            CDVbcsProcessor* processor;
+            
+            // We allow the user to define an alternate xib file for loading the overlay.
+            NSString *overlayXib = nil;
+            if ( [command.arguments count] >= 1 )
+            {
+                overlayXib = [command.arguments objectAtIndex:0];
+            }
+            
+            capabilityError = [self isScanNotPossible];
+            if (capabilityError) {
+                [self returnError:capabilityError callback:callback];
+                return;
+            }
+            
+            processor = [[CDVbcsProcessor alloc]
+                         initWithPlugin:self
+                         callback:callback
+                         parentViewController:self.viewController
+                         alterateOverlayXib:overlayXib
+                         ];
+            [processor retain];
+            //[processor retain];
+            //    [processor retain];
+            // queue [processor scanBarcode] to run on the event loop
+            [processor performSelector:@selector(scanBarcode) withObject:nil afterDelay:0];
+            
+            
+        } else {
+            [self displayPermissionMissingAlert];
+        }
+    }];
     
-    processor = [[CDVbcsProcessor alloc]
-                 initWithPlugin:self
-                 callback:callback
-                 parentViewController:self.viewController
-                 alterateOverlayXib:overlayXib
-                 ];
-    [processor retain];
-    //[processor retain];
-    //    [processor retain];
-    // queue [processor scanBarcode] to run on the event loop
-    [processor performSelector:@selector(scanBarcode) withObject:nil afterDelay:0];
+    
+    
+//    // We allow the user to define an alternate xib file for loading the overlay.
+//    NSString *overlayXib = nil;
+//    if ( [command.arguments count] >= 1 )
+//    {
+//        overlayXib = [command.arguments objectAtIndex:0];
+//    }
+//    
+//    capabilityError = [self isScanNotPossible];
+//    if (capabilityError) {
+//        [self returnError:capabilityError callback:callback];
+//        return;
+//    }
+//    
+//    processor = [[CDVbcsProcessor alloc]
+//                 initWithPlugin:self
+//                 callback:callback
+//                 parentViewController:self.viewController
+//                 alterateOverlayXib:overlayXib
+//                 ];
+//    [processor retain];
+//    //[processor retain];
+//    //    [processor retain];
+//    // queue [processor scanBarcode] to run on the event loop
+//    [processor performSelector:@selector(scanBarcode) withObject:nil afterDelay:0];
 }
 
 //--------------------------------------------------------------------------

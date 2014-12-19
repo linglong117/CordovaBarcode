@@ -128,7 +128,9 @@
   <string name="result_product">Found product</string>
   <string name="result_sms">Found SMS address</string>
   <string name="result_tel">Found phone number</string>
-  <string name="result_text">Found plain text</string>
+  <!-- <string name="result_text">Found plain text</string> -->
+  <string name="result_text"></string>
+  
   <string name="result_uri">Found URL</string>
   <string name="result_wifi">Found WLAN Configuration</string>
   <string name="sbc_name">Google Book Search</string>

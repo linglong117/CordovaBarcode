@@ -128,7 +128,9 @@
   <string name="result_product">找到产品</string>
   <string name="result_sms">找到短信地址</string>
   <string name="result_tel">找到电话号码</string>
-  <string name="result_text">找到纯文本</string>
+  <!-- <string name="result_text">找到纯文本</string> -->
+  <string name="result_text"></string>
+  
   <string name="result_uri">找到URL</string>
   <string name="result_wifi">发现网络配置</string>
   <string name="sbc_name">Google图书搜索</string>
