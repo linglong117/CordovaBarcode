@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="com.phonegap.plugins.barcodescanner"
+    version="2.0.0">
+
+    <name>BarcodeScanner</name>
+    <description>You can use the BarcodeScanner plugin to scan different types of barcodes (using the device's camera) and get the metadata encoded in them for processing within your application.</description>
+    <license>MIT</license>
+
+    <repo>https://github.com/wildabeast/BarcodeScanner</repo>
+    <issue>https://github.com/wildabeast/BarcodeScanner/issues</issue> 
+    
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>    
+
+    <js-module src="www/barcodescanner.js" name="BarcodeScanner">
+        <clobbers target="cordova.plugins.barcodeScanner" />
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+        <!-- Cordova >= 2.8 -->
+        <config-file target="config.xml" parent="/*">
+            <feature name="BarcodeScanner">
+                <!-- zxing <param name="ios-package" value="CDVBarcodeScanner" /> zxing -->
+                <param name="ios-package" value="BarcodeScan" />
+            </feature>
+        </config-file>
+
+        <!-- zxing <resource-file src="src/ios/scannerOverlay.xib" />
+
+        <header-file src="src/ios/zxing-all-in-one.h" />
+
+        <source-file src="src/ios/CDVBarcodeScanner.mm" compiler-flags="-fno-objc-arc" />
+        <source-file src="src/ios/zxing-all-in-one.cpp" />
+
+        <framework src="libiconv.dylib" />
+        <framework src="AVFoundation.framework" />
+        <framework src="AssetsLibrary.framework" />
+        <framework src="CoreVideo.framework" />
+        <framework src="QuartzCore.framework" /> zxing -->
+
+        <resource-file src="src/ios/line@2x.png" />
+        <resource-file src="src/ios/pick_bg@2x.png" />
+
+        <header-file src="src/ios/BarcodeScan.h" />
+
+        <source-file src="src/ios/BarcodeScan.m" />
+    </platform>
+
+    <!-- android -->
+    <platform name="android">
+
+        <source-file src="src/android/com/phonegap/plugins/barcodescanner/BarcodeScanner.java" target-dir="src/com/phonegap/plugins/barcodescanner" />
+        <!--
+        <source-file src="R.java" target-dir="src/com/google/zxing/client/android" />
+        -->
+        
+        <!--
+        <config-file target="res/xml/plugins.xml" parent="/plugins">
+            <plugin name="BarcodeScanner" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>
+        </config-file>
+        -->
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="BarcodeScanner">
+                <param name="android-package" value="com.phonegap.plugins.barcodescanner.BarcodeScanner" />
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity
+                android:name="com.google.zxing.client.android.CaptureActivity"
+                android:screenOrientation="portrait"
+                android:clearTaskOnLaunch="true"
+                android:configChanges="orientation|keyboardHidden"
+                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                android:windowSoftInputMode="stateAlwaysHidden"
+                android:exported="false">
+                <intent-filter>
+                    <action android:name="com.phonegap.plugins.barcodescanner.SCAN"/>
+                    <category android:name="android.intent.category.DEFAULT"/>
+                </intent-filter>
+            </activity>
+            <activity android:name="com.google.zxing.client.android.encode.EncodeActivity" android:label="@string/share_name">
+                <intent-filter>
+                    <action android:name="com.phonegap.plugins.barcodescanner.ENCODE"/>
+                    <category android:name="android.intent.category.DEFAULT"/>
+                </intent-filter>
+            </activity>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.CAMERA" />
+            <uses-permission android:name="android.permission.FLASHLIGHT" />
+            <uses-permission android:name="android.permission.VIBRATE" />
+            <!-- Not required to allow users to work around this -->
+            <uses-feature android:name="android.hardware.camera" android:required="false" />
+            <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+        </config-file>
+
+        <source-file src="src/android/com.google.zxing.client.android.captureactivity.jar" target-dir="libs"/>
+
+        <!--
+            LibraryProject/res/*.*
+            search: (src/android/LibraryProject/(.+?)/[^/]+)$
+            replace: <source-file src="$1" target-dir="$2"/>
+        -->
+        
+        <source-file src="src/android/LibraryProject/res/drawable/scan_flashlight.xml" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable/scan_history.xml" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable/scan_photo.xml" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable/seekbar_bg.xml" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable/seekbar_style.xml" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_corner_bottom_left.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_corner_bottom_right.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_corner_top_left.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_corner_top_right.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_fail.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_flashlight_normal.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_flashlight_pressed.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_history_normal.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_history_pressed.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_laser.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_photo_normal.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/scan_photo_pressed.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/drawable-hdpi/thumb_unfocus.png" target-dir="res/drawable"/>
+        <source-file src="src/android/LibraryProject/res/layout/capture.xml" target-dir="res/layout"/>
+        <source-file src="src/android/LibraryProject/res/raw/beep.ogg" target-dir="res/raw"/>
+        <source-file src="src/android/LibraryProject/res/values/colors.xml" target-dir="res/values"/>
+        <source-file src="src/android/LibraryProject/res/values/ids.xml" target-dir="res/values"/>
+        <source-file src="src/android/LibraryProject/res/values/styles.xml" target-dir="res/values"/>
+
+        <!-- plugman cannot merge - prepare manual merge -->
+        <config-file target="res/values/strings.xml" parent="/resources">
+            <string name="app_picker_name">应用</string>
+            <string name="placeHolder">placeHolder</string>
+            <string name="seekbar_add">+</string>
+            <string name="seekbar_minus">-</string>
+            <string name="create">生成</string>
+            <string name="scan_failed">扫描失败</string>
+            <string name="bottom_hint">与镜头保持10CM距离，避免逆光和阴影</string>
+            <string name="top_hint">将条形码或二维码置于取景框内，系统会自动扫描</string>
+            <string name="cancel">取消</string>
+            <string name="msg_camera_framework_bug">抱歉，Android相机出现问题。您可能需要重启设备。</string>
+            <string name="button_ok">确定</string>
+            <string name="share_name">通过条码分享</string>
+        </config-file>
+    </platform>
+
+    <platform name="windows8">
+        <js-module src="src/windows8/BarcodeScannerProxy.js" name="BarcodeScannerProxy">
+            <merges target="" />
+        </js-module>
+        <config-file target="package.appxmanifest" parent="/Package/Capabilities">
+            <DeviceCapability Name="webcam" />
+        </config-file>
+        <framework src="src/windows8/lib/ZXing.winmd" custom="true" />
+        <framework src="src/windows8/lib/WinRTBarcodeReader.winmd" custom="true" />
+    </platform>
+
+    <!-- Windows Phone 8 -->
+    <platform name="wp8">
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="BarcodeScanner">
+                <param name="wp-package" value="BarcodeScanner"/>
+            </feature>
+        </config-file>
+
+        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
+            <Capability Name="ID_CAP_ISV_CAMERA" />
+        </config-file>
+
+        <framework src="src/wp8/lib/zxing.wp8.0.dll" custom="true" />
+
+        <source-file src="src/wp8/BarcodeScanner.cs" />
+        <source-file src="src/wp8/BarcodeScannerTask.cs" />
+        <source-file src="src/wp8/BarcodeScannerUI.xaml" />
+        <source-file src="src/wp8/BarcodeScannerUI.xaml.cs" />
+
+    </platform>
+</plugin>
