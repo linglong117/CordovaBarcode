@@ -77,6 +77,9 @@ public final class CaptureActivityHandler extends Handler {
 
   @Override
   public void handleMessage(Message message) {
+	  //Log.e("handleMessage 1=======>", message.toString());
+
+	  
     if (message.what == fakeR.getId("id", "restart_preview")) {
         Log.d(TAG, "Got restart preview message");
         restartPreviewAndDecode();
@@ -95,6 +98,8 @@ public final class CaptureActivityHandler extends Handler {
         Log.d(TAG, "Got return scan result message");
         activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
         activity.finish();
+  	  //Log.e("handleMessage 2=======>", message.toString());
+
     } else if (message.what == fakeR.getId("id", "launch_product_query")) {
         Log.d(TAG, "Got product query message");
         String url = (String) message.obj;
@@ -119,6 +124,7 @@ public final class CaptureActivityHandler extends Handler {
         } catch (ActivityNotFoundException anfe) {
           Log.w(TAG, "Can't find anything to handle VIEW of URI " + url);
         }
+  	  //Log.e("handleMessage 3=======>", message.toString());
     }
   }
 
