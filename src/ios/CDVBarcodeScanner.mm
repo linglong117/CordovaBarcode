@@ -430,17 +430,16 @@ parentViewController:(UIViewController*)parentViewController
 static SystemSoundID beep_id = 0;
 
 -(void) playSound
-
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"beep-beep" ofType:@"caf"];
-    if (path) {
-        //注册声音到系统
-        AudioServicesCreateSystemSoundID((CFURLRef)[NSURL fileURLWithPath:path],&beep_id);
-        AudioServicesPlaySystemSound(beep_id);
-        //        AudioServicesPlaySystemSound(shake_sound_male_id);//如果无法再下面播放，可以尝试在此播放
-    }
-    AudioServicesPlaySystemSound(beep_id);   //播放注册的声音，（此句代码，可以在本类中的任意位置调用，不限于本方法中）
-    //    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);   //让手机震动
+    // NSString *path = [[NSBundle mainBundle] pathForResource:@"beep-beep" ofType:@"caf"];
+    // if (path) {
+    //     //注册声音到系统
+    //     AudioServicesCreateSystemSoundID((CFURLRef)[NSURL fileURLWithPath:path],&beep_id);
+    //     AudioServicesPlaySystemSound(beep_id);
+    //     //        AudioServicesPlaySystemSound(shake_sound_male_id);//如果无法再下面播放，可以尝试在此播放
+    // }
+    // AudioServicesPlaySystemSound(beep_id);   //播放注册的声音，（此句代码，可以在本类中的任意位置调用，不限于本方法中）
+    // //    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);   //让手机震动
 }
 
 - (void)initSound
